@@ -107,7 +107,6 @@ def main():
     # Call the appropriate page function
     pages[current_page]()
 
-# Rest of the functions remain the same as in the original script
 def home_page():
     st.title("Ontario Energy Forecasting System")
     
