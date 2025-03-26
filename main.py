@@ -4,74 +4,7 @@ import pandas as pd
 from PIL import Image
 import time
 import random
-# Custom CSS for improved navigation styling
-def local_css():
-    st.markdown("""
-    <style>
-    /* Navigation Radio Button Styling */
-    .stRadio > div {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #f0f2f6;
-        border-radius: 30px;
-        padding: 10px;
-        gap: 20px;
-    }
-    
-    /* Individual Radio Buttons */
-    .stRadio > div > label {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 20px;
-        margin: 0 5px;
-        border-radius: 25px;
-        transition: all 0.3s ease;
-        font-weight: 500;
-        color: #333;
-    }
-    
-    /* Unselected Radio Button Hover Effect */
-    .stRadio > div > label:hover {
-        background-color: rgba(0,123,255,0.1);
-        color: #007bff;
-    }
-    
-    /* Selected Radio Button */
-    .stRadio > div > label[data-baseweb='radio']:checked {
-        background-color: #007bff;
-        color: white !important;
-        box-shadow: 0 4px 6px rgba(0,123,255,0.2);
-    }
-    
-    /* Hide default radio button */
-    .stRadio > div > div > label > div > div > div {
-        display: none !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
 
-# ------------------Main Streamlit App------------------
-def main():
-    st.set_page_config(page_title="Ontario Energy Forecasting System", layout="wide")
-    
-    # Apply custom CSS
-    local_css()
-
-    # Navigation
-    pages = {
-        "Home": home_page,
-        "Visualization": visualization_page,
-        "Prediction": prediction_page,
-        "Evaluation": evaluation_page
-    }
-
-    # Create menu in the main page instead of sidebar
-    page = st.radio("Navigation", list(pages.keys()), horizontal=True)
-
-    # Call the appropriate page function
-    pages[page]()
 # ------------------Main Streamlit App------------------
 def main():
     st.set_page_config(page_title="Ontario Energy Forecasting System", layout="wide")
@@ -104,7 +37,7 @@ def home_page():
     
     # Footer-like information
     st.markdown("---")
-    st.markdown("© Data Science Project_Group02, 2025-3-26")
+    st.markdown("© Data Science Project_Group02, 2025-3-26-")
 
 def visualization_page():
     st.header("Data Visualization")
