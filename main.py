@@ -5,50 +5,9 @@ from PIL import Image
 import time
 import random
 
-# Custom CSS for button-style navigation
-def custom_nav_css():
-    st.markdown("""
-    <style>
-    /* Custom navigation button styling */
-    .stRadio > div {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin-bottom: 20px;
-    }
-    .stRadio > div > div {
-        margin: 0 !important;
-    }
-    .stRadio > div > div > label {
-        background-color: #f0f2f6;
-        color: #333;
-        padding: 10px 20px;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        border: 2px solid transparent;
-    }
-    .stRadio > div > div > label:hover {
-        background-color: #e6e9ef;
-        border-color: #4CAF50;
-    }
-    .stRadio > div > div > [data-baseweb="radio"] {
-        display: none;
-    }
-    .stRadio > div > div > label[data-baseweb="radio"][aria-checked="true"] {
-        background-color: #4CAF50;
-        color: white;
-        border-color: #4CAF50;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
 # ------------------Main Streamlit App------------------
 def main():
     st.set_page_config(page_title="Ontario Energy Forecasting System", layout="wide")
-
-    # Apply custom CSS for navigation
-    custom_nav_css()
 
     # Navigation
     pages = {
@@ -67,22 +26,18 @@ def main():
 def home_page():
     st.title("Ontario Energy Forecasting System")
     
-    # Try to display main image with more robust error handling
-    img_path = "main.png"
-    if os.path.exists(img_path):
-        try:
-            img = Image.open(img_path)
-            st.image(img, use_container_width=True)
-        except Exception as e:
-            st.error(f"Error processing image: {e}")
-    else:
-        st.info("Main image not found. Please check the image file.")
+    # Try to display main image
+    try:
+        img = Image.open("main.png")
+        st.image(img, use_container_width=True)
+    except Exception as e:
+        st.warning(f"Could not load main image: {e}")
     
     st.write("Welcome to the Ontario Energy Forecasting System!")
     
     # Footer-like information
     st.markdown("---")
-    st.markdown("© Data Science Project, 2025-3-26")
+    st.markdown("© Data Science Project, 2025-3-26-")
 
 def visualization_page():
     st.header("Data Visualization")
@@ -108,32 +63,23 @@ def visualization_page():
     if os.path.exists(visualization_folder):
         image_files = [f for f in os.listdir(visualization_folder) if f.lower().endswith(".png")]
         
-        if not image_files:
-            st.info("No visualization images found in the folder.")
-        
         for i in range(0, len(image_files), 2):
             cols = st.columns(2)
             with cols[0]:
                 img_path = os.path.join(visualization_folder, image_files[i])
-                try:
-                    img = Image.open(img_path)
-                    st.image(img, use_container_width=True)
-                    st.caption(descriptions.get(image_files[i], "No description"))
-                except Exception as e:
-                    st.error(f"Could not load image {image_files[i]}: {e}")
+                img = Image.open(img_path)
+                st.image(img, use_container_width=True)
+                st.caption(descriptions.get(image_files[i], "No description"))
             
             if i + 1 < len(image_files):
                 with cols[1]:
                     img_path = os.path.join(visualization_folder, image_files[i+1])
-                    try:
-                        img = Image.open(img_path)
-                        st.image(img, use_container_width=True)
-                        st.caption(descriptions.get(image_files[i+1], "No description"))
-                    except Exception as e:
-                        st.error(f"Could not load image {image_files[i+1]}: {e}")
+                    img = Image.open(img_path)
+                    st.image(img, use_container_width=True)
+                    st.caption(descriptions.get(image_files[i+1], "No description"))
 
     else:
-        st.error("Visualization folder not found. Please check the folder path.")
+        st.error("Visualization folder not found.")
 
 def prediction_page():
     st.header("Prediction Configuration")
@@ -165,18 +111,13 @@ def prediction_page():
         
         filename = model_target_map.get((model, target))
         if filename:
-            predict_folder = "./predict"
-            full_path = os.path.join(predict_folder, filename)
-            
-            if os.path.exists(full_path):
-                try:
-                    img = Image.open(full_path)
-                    st.image(img, use_container_width=True)
-                    st.caption(f"Prediction result for {model} - {target}")
-                except Exception as e:
-                    st.error(f"Could not load prediction image: {e}")
-            else:
-                st.warning(f"Prediction image {filename} not found in {predict_folder}.")
+            try:
+                img_path = os.path.join("./predict", filename)
+                img = Image.open(img_path)
+                st.image(img, use_container_width=True)
+                st.caption(f"Prediction result for {model} - {target}")
+            except Exception as e:
+                st.error(f"Could not load prediction image: {e}")
         else:
             st.warning("No matching prediction image found.")
 
@@ -187,31 +128,22 @@ def evaluation_page():
     if os.path.exists(evaluation_folder):
         image_files = [f for f in os.listdir(evaluation_folder) if f.lower().endswith(".png")]
         
-        if not image_files:
-            st.info("No evaluation images found in the folder.")
-        
         for i in range(0, len(image_files), 2):
             cols = st.columns(2)
             with cols[0]:
                 img_path = os.path.join(evaluation_folder, image_files[i])
-                try:
-                    img = Image.open(img_path)
-                    st.image(img, use_container_width=True)
-                    st.caption(f"Evaluation: {os.path.splitext(image_files[i])[0]}")
-                except Exception as e:
-                    st.error(f"Could not load image {image_files[i]}: {e}")
+                img = Image.open(img_path)
+                st.image(img, use_container_width=True)
+                st.caption(f"Evaluation: {os.path.splitext(image_files[i])[0]}")
             
             if i + 1 < len(image_files):
                 with cols[1]:
                     img_path = os.path.join(evaluation_folder, image_files[i+1])
-                    try:
-                        img = Image.open(img_path)
-                        st.image(img, use_container_width=True)
-                        st.caption(f"Evaluation: {os.path.splitext(image_files[i+1])[0]}")
-                    except Exception as e:
-                        st.error(f"Could not load image {image_files[i+1]}: {e}")
+                    img = Image.open(img_path)
+                    st.image(img, use_container_width=True)
+                    st.caption(f"Evaluation: {os.path.splitext(image_files[i+1])[0]}")
     else:
-        st.error("Evaluation folder not found. Please check the folder path.")
+        st.error("Evaluation folder not found.")
 
 # Run the app
 if __name__ == "__main__":
