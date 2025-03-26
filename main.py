@@ -1,179 +1,165 @@
 import streamlit as st
 import os
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
 from PIL import Image
 
-# 配置页面基本信息
-st.set_page_config(page_title="Ontario Energy Forecasting", layout="wide")
+# ------------------loading data function------------------
+def load_data(file_path):
+    try:
+        df = pd.read_csv(file_path)
+        return df
+    except Exception as e:
+        st.error(f"Data loading failed: {e}")
+        return None
 
-# CSS样式
-custom_css = """
-<style>
-.top-bar {
-    background-color: #000000;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.green-bar {
-    background-color: #006A4D;
-    padding: 15px;
-    color: white;
-    font-size: 20px;
-    font-weight: bold;
-}
-.footer {
-    background-color: #000000;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    font-size: 14px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-.content {
-    padding-top: 50px;
-    padding-bottom: 60px;
-    text-align: center;
-    background-color: #f5f5f5;
-}
-.menu {
-    background-color: white;
-    border: 1px solid black;
-    width: 200px;
-    position: absolute;
-    top: 100px;
-    right: 10px;
-    z-index: 999;
-}
-.menu-item {
-    padding: 10px;
-    cursor: pointer;
-    font-size: 16px;
-}
-.menu-item:hover {
-    background-color: #f0f0f0;
-}
-</style>
-"""
-st.markdown(custom_css, unsafe_allow_html=True)
+# ------------------Main Streamlit App------------------
+def main():
+    st.set_page_config(page_title="Ontario Energy Forecasting System", layout="wide")
 
-# Session State
-if 'menu_visible' not in st.session_state:
-    st.session_state.menu_visible = False
-if 'page' not in st.session_state:
-    st.session_state.page = 'Home'
+    # Sidebar Navigation
+    st.sidebar.title("Navigation")
+    page = st.sidebar.radio("Go to", 
+        ["Home", "Visualization", "Prediction", "Evaluation"])
 
-# 菜单函数
-def toggle_menu():
-    st.session_state.menu_visible = not st.session_state.menu_visible
-
-def set_page(page_name):
-    st.session_state.page = page_name
-    st.session_state.menu_visible = False
-
-# 顶部黑色栏
-with st.container():
-    cols = st.columns([10, 1])
-    with cols[0]:
-        try:
-            icon = Image.open("1.png")
-            st.image(icon, width=160)
-        except Exception:
-            st.warning("Logo image not found.")
-
-    with cols[1]:
-        menu_icon = "3.png" if st.session_state.menu_visible else "2.png"
-        if st.button("", key="menu_button"):
-            toggle_menu()
-        try:
-            icon_image = Image.open(menu_icon)
-            st.image(icon_image, width=100)
-        except Exception:
-            st.error("Menu icon not found.")
-
-# 下拉菜单
-if st.session_state.menu_visible:
-    menu_options = ["Home", "Visualization", "Prediction", "Evaluation"]
-    for option in menu_options:
-        if st.button(option, key=f"menu_{option}"):
-            set_page(option)
-
-# 顶部绿色栏
-st.markdown('<div class="green-bar">Ontario Energy Forecasting</div>', unsafe_allow_html=True)
-
-# 主内容区域
-if st.session_state.page == "Home":
-    with st.container():
-        st.markdown('<div class="content">', unsafe_allow_html=True)
-        try:
-            main_image = Image.open("main.png")
-            st.image(main_image, use_column_width=True)
-        except Exception:
-            st.error("(No main.png found)")
-
-        st.markdown("<h1 style='font-size:30px;font-weight:bold;color:black;'>Welcome to Ontario Energy Forecasting System!</h1>", unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-elif st.session_state.page == "Visualization":
-    st.header("Data Visualization (Images)")
-    vis_path = "./Visulation"
-    descriptions = {
-        "Average Monthly Temperature.png": "Monthly average temperature variations throughout the year.",
-        "Energy Demand over time.png": "Energy demand fluctuations over different periods.",
-        "Energy Price Over time.png": "Energy prices fluctuation trends over time."
-        # Add other descriptions here...
-    }
-
-    if os.path.exists(vis_path):
-        images = [img for img in os.listdir(vis_path) if img.lower().endswith('.png')]
-        cols = st.columns(2)
-        for idx, img_name in enumerate(images):
-            with cols[idx % 2]:
-                st.subheader(img_name)
-                img = Image.open(os.path.join(vis_path, img_name))
-                st.image(img, use_column_width=True)
-                st.write(descriptions.get(img_name, "No description available."))
+    # File uploader (optional - for custom CSV upload)
+    st.sidebar.markdown("### Upload your data")
+    uploaded_file = st.sidebar.file_uploader("Upload CSV", type="csv")
+    
+    # Load data
+    if uploaded_file:
+        df = load_data(uploaded_file)
     else:
-        st.error("Visualization folder not found.")
+        df = load_data('data.csv')
 
-elif st.session_state.page == "Prediction":
-    st.header("Prediction Configuration")
-    model = st.selectbox("Select Model", ["ARIMA", "LightGBM", "XGboost", "RandomForest"])
-    target = st.selectbox("Prediction Target", ["Electricity Demand", "Electricity Price", "Electricity Demand & Electricity Price"])
+    # Home Page
+    if page == "Home":
+        st.title("Ontario Energy Forecasting System")
+        
+        # Try to display main image
+        try:
+            img = Image.open("main.png")
+            st.image(img, use_column_width=True)
+        except Exception as e:
+            st.warning(f"Could not load main image: {e}")
+        
+        st.write("Welcome to the Ontario Energy Forecasting System!")
+        
+        # Footer-like information
+        st.markdown("---")
+        st.markdown("© Data Science Project, 2025-3-25")
 
-    if st.button("Run Prediction"):
-        prediction_map = {
-            ("ARIMA", "Electricity Price"): "Arima forcast for electricity price.png",
-            ("ARIMA", "Electricity Demand"): "Arima Forecast for electricity demand.png"
-            # Complete the mapping as needed
-        }
-        filename = prediction_map.get((model, target))
-        if filename:
-            img_path = os.path.join("./predict", filename)
-            if os.path.exists(img_path):
-                st.image(Image.open(img_path), caption=f"{model} prediction for {target}")
-            else:
-                st.error("Prediction image not found.")
+    # Visualization Page
+    elif page == "Visualization":
+        st.header("Data Visualization")
+        
+        visualization_folder = "./Visulation"
+        if os.path.exists(visualization_folder):
+            image_files = [f for f in os.listdir(visualization_folder) if f.lower().endswith(".png")]
+            
+            descriptions = {
+                "Average Monthly Temperature.png": "Monthly average temperature variations",
+                "Distribution of Temp-population-hourly demand.png": "Temperature, population, and hourly demand distribution",
+                "Energy Demand Cluster Based on Climate change.png": "Energy demand clusters based on climate conditions",
+                "Energy Demand over time.png": "Energy demand fluctuations over time",
+                "Energy Demand Vs Wind Speed.png": "Energy demand vs wind speed",
+                "Energy Price Over time.png": "Energy price trends",
+                "Feature Correlation.png": "Feature correlations",
+                "impact of extreme weather on energy demand.png": "Extreme weather impact on energy demand",
+                "Mutual information scores for predictiong hourly_demand.png": "Feature predictive power",
+                "Ontario Population over time.png": "Ontario population growth",
+                "Population Vs. Energy Demand.png": "Population vs energy demand",
+                "Scatter Matrix of Electricity Demand Price and Weather Factors.png": "Multivariate relationships",
+                "Temperature Trends Over Time.png": "Temperature trends",
+                "Vs01-Averege Hourly Demand by Season in Ontario.png": "Hourly demand by season"
+            }
+            
+            for i in range(0, len(image_files), 2):
+                cols = st.columns(2)
+                with cols[0]:
+                    img_path = os.path.join(visualization_folder, image_files[i])
+                    img = Image.open(img_path)
+                    st.image(img, use_column_width=True)
+                    st.caption(descriptions.get(image_files[i], "No description"))
+                
+                if i + 1 < len(image_files):
+                    with cols[1]:
+                        img_path = os.path.join(visualization_folder, image_files[i+1])
+                        img = Image.open(img_path)
+                        st.image(img, use_column_width=True)
+                        st.caption(descriptions.get(image_files[i+1], "No description"))
+
         else:
-            st.error("No matching prediction available.")
+            st.error("Visualization folder not found.")
 
-elif st.session_state.page == "Evaluation":
-    st.header("Model Evaluation")
-    eval_path = "./Evaluation"
+    # Prediction Page
+    elif page == "Prediction":
+        st.header("Prediction Configuration")
+        
+        model = st.selectbox("Select Model", 
+            ["ARIMA", "LightGBM", "XGboost", "RandomForest"])
+        
+        target = st.selectbox("Prediction Target", 
+            ["Electricity Demand", "Electricity Price", 
+             "Electricity Demand & Electricity Price"])
+        
+        if st.button("Run Prediction"):
+            st.info(f"Running {model} for {target} prediction (5 Years)...")
+            
+            model_target_map = {
+                ("ARIMA", "Electricity Price"): "Arima forcast for electricity price.png",
+                ("ARIMA", "Electricity Demand"): "Arima Forecast for electricity demand.png",
+                ("ARIMA", "Electricity Demand & Electricity Price"): "Arima-prediction.png",
+                ("LightGBM", "Electricity Price"): "prediction-price-lightgbm.png",
+                ("LightGBM", "Electricity Demand"): "prediction-demand-lightgbm.png",
+                ("LightGBM", "Electricity Demand & Electricity Price"): "prediciton-lightgbm.png",
+                ("XGboost", "Electricity Price"): "prediction-price-xgboost.png",
+                ("XGboost", "Electricity Demand"): "prediction-demand-xgboost.png",
+                ("XGboost", "Electricity Demand & Electricity Price"): "prediction-xgboost.png",
+                ("RandomForest", "Electricity Price"): "prediction-price-randomforest.png",
+                ("RandomForest", "Electricity Demand"): "prediction-demand-RandomForest.png",
+                ("RandomForest", "Electricity Demand & Electricity Price"): "prediction-randomforest.png",
+            }
+            
+            filename = model_target_map.get((model, target))
+            if filename:
+                try:
+                    img_path = os.path.join("./predict", filename)
+                    img = Image.open(img_path)
+                    st.image(img, use_column_width=True)
+                    st.caption(f"Prediction result for {model} - {target}")
+                except Exception as e:
+                    st.error(f"Could not load prediction image: {e}")
+            else:
+                st.warning("No matching prediction image found.")
 
-    if os.path.exists(eval_path):
-        images = [img for img in os.listdir(eval_path) if img.lower().endswith('.png')]
-        cols = st.columns(2)
-        for idx, img_name in enumerate(images):
-            with cols[idx % 2]:
-                st.subheader(img_name)
-                img = Image.open(os.path.join(eval_path, img_name))
-                st.image(img, use_column_width=True)
-                st.write(f"Description for {img_name}: Evaluation results and performance indicators.")
-    else:
-        st.error("Evaluation folder not found.")
+    # Evaluation Page
+    elif page == "Evaluation":
+        st.header("Model Evaluation")
+        
+        evaluation_folder = "./Evaluation"
+        if os.path.exists(evaluation_folder):
+            image_files = [f for f in os.listdir(evaluation_folder) if f.lower().endswith(".png")]
+            
+            for i in range(0, len(image_files), 2):
+                cols = st.columns(2)
+                with cols[0]:
+                    img_path = os.path.join(evaluation_folder, image_files[i])
+                    img = Image.open(img_path)
+                    st.image(img, use_column_width=True)
+                    st.caption(f"Evaluation: {os.path.splitext(image_files[i])[0]}")
+                
+                if i + 1 < len(image_files):
+                    with cols[1]:
+                        img_path = os.path.join(evaluation_folder, image_files[i+1])
+                        img = Image.open(img_path)
+                        st.image(img, use_column_width=True)
+                        st.caption(f"Evaluation: {os.path.splitext(image_files[i+1])[0]}")
+        else:
+            st.error("Evaluation folder not found.")
 
-# 底部版权栏
-st.markdown('<div class="footer">© Data Science Project, 2025-3-26</div>', unsafe_allow_html=True)
+# Run the app
+if __name__ == "__main__":
+    main()
