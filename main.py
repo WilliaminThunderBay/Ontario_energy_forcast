@@ -93,7 +93,7 @@ def prediction_page():
     
     if st.button("Run Prediction"):
         st.info(f"Running {model} for {target} prediction (5 Years)...")
-        time.sleep(2 + random.randint(1, 3))
+        time.sleep(2 + random.randint(1, 2))
         model_target_map = {
             ("ARIMA", "Electricity Price"): "Arima forcast for electricity price.png",
             ("ARIMA", "Electricity Demand"): "Arima Forecast for electricity demand.png",
