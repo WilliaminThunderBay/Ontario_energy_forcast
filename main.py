@@ -7,7 +7,7 @@ import random
 
 def custom_navigation():
     """
-    Creates a custom navigation bar using HTML and CSS
+    Creates a custom navigation bar using HTML and CSS with improved page navigation
     """
     st.markdown("""
     <style>
@@ -54,34 +54,7 @@ def custom_navigation():
         display: none !important;
     }
     </style>
-    
-    <div class="nav-container">
-        <script>
-        // JavaScript to handle active state
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const links = document.querySelectorAll('.nav-link');
-            const currentPath = window.location.pathname;
-            
-            links.forEach(link => {
-                link.addEventListener('click', function() {
-                    links.forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-        });
-        </script>
     """, unsafe_allow_html=True)
-
-    # Create custom navigation using HTML
-    nav_html = """
-    <div class="nav-links">
-        <a href="#Home" class="nav-link" onclick="window.location.reload()">Home</a>
-        <a href="#Visualization" class="nav-link" onclick="window.location.reload()">Visualization</a>
-        <a href="#Prediction" class="nav-link" onclick="window.location.reload()">Prediction</a>
-        <a href="#Evaluation" class="nav-link" onclick="window.location.reload()">Evaluation</a>
-    </div>
-    """
-    st.markdown(nav_html, unsafe_allow_html=True)
 
 def main():
     st.set_page_config(page_title="Ontario Energy Forecasting System", layout="wide")
@@ -89,23 +62,20 @@ def main():
     # Replace the standard radio button with custom navigation
     custom_navigation()
 
-    # Navigation
-    pages = {
-        "Home": home_page,
-        "Visualization": visualization_page,
-        "Prediction": prediction_page,
-        "Evaluation": evaluation_page
-    }
+    # Use Streamlit's built-in page navigation
+    page = st.sidebar.radio("Navigate", 
+        ["Home", "Visualization", "Prediction", "Evaluation"], 
+        index=0, 
+        label_visibility="collapsed")
 
-    # Determine current page based on hash in URL
-    current_page = "Home"
-    page_hash = st.experimental_get_query_params().get("page", ["Home"])[0]
-    
-    if page_hash in pages:
-        current_page = page_hash
-
-    # Call the appropriate page function
-    pages[current_page]()
+    if page == "Home":
+        home_page()
+    elif page == "Visualization":
+        visualization_page()
+    elif page == "Prediction":
+        prediction_page()
+    elif page == "Evaluation":
+        evaluation_page()
 
 # Rest of the functions remain the same as in the original script
 def home_page():
