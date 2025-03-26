@@ -7,7 +7,7 @@ import random
 
 def custom_navigation():
     """
-    Creates a custom navigation bar using HTML and CSS
+    Creates a custom navigation bar using HTML and CSS with proper page navigation
     """
     st.markdown("""
     <style>
@@ -50,46 +50,19 @@ def custom_navigation():
     }
     
     /* Hide default Streamlit radio button */
-    .stRadio > div > div > label > div > div > div {
+    .stRadio > div > div > div > label > div {
         display: none !important;
     }
     </style>
-    
-    <div class="nav-container">
-        <script>
-        // JavaScript to handle active state
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const links = document.querySelectorAll('.nav-link');
-            const currentPath = window.location.pathname;
-            
-            links.forEach(link => {
-                link.addEventListener('click', function() {
-                    links.forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-        });
-        </script>
     """, unsafe_allow_html=True)
-
-    # Create custom navigation using HTML
-    nav_html = """
-    <div class="nav-links">
-        <a href="#Home" class="nav-link" onclick="window.location.reload()">Home</a>
-        <a href="#Visualization" class="nav-link" onclick="window.location.reload()">Visualization</a>
-        <a href="#Prediction" class="nav-link" onclick="window.location.reload()">Prediction</a>
-        <a href="#Evaluation" class="nav-link" onclick="window.location.reload()">Evaluation</a>
-    </div>
-    """
-    st.markdown(nav_html, unsafe_allow_html=True)
 
 def main():
     st.set_page_config(page_title="Ontario Energy Forecasting System", layout="wide")
 
-    # Replace the standard radio button with custom navigation
+    # Custom navigation
     custom_navigation()
 
-    # Navigation
+    # Pages dictionary
     pages = {
         "Home": home_page,
         "Visualization": visualization_page,
@@ -97,16 +70,23 @@ def main():
         "Evaluation": evaluation_page
     }
 
-    # Determine current page based on hash in URL
-    current_page = "Home"
-    page_hash = st.experimental_get_query_params().get("page", ["Home"])[0]
-    
-    if page_hash in pages:
-        current_page = page_hash
+    # Determine current page using query parameters
+    page_param = st.experimental_get_query_params().get("page", ["Home"])[0]
+    current_page = page_param if page_param in pages else "Home"
+
+    # Navigation buttons
+    nav_options = list(pages.keys())
+    selected_page = st.radio("Select Page", nav_options, index=nav_options.index(current_page), horizontal=True, label_visibility="collapsed")
+
+    # Update query parameters when a page is selected
+    if selected_page != current_page:
+        st.experimental_set_query_params(page=selected_page)
+        st.experimental_rerun()
 
     # Call the appropriate page function
-    pages[current_page]()
+    pages[selected_page]()
 
+# Rest of the code remains the same as in the original script (home_page, visualization_page, prediction_page, evaluation_page functions)
 def home_page():
     st.title("Ontario Energy Forecasting System")
     
@@ -121,7 +101,9 @@ def home_page():
     
     # Footer-like information
     st.markdown("---")
-    st.markdown("© Data Science Project_Group02, 2025-3-26--")
+    st.markdown("© Data Science Project_Group02, 2025-3-26")
+
+# (Other functions remain the same as in the original script)
 
 def visualization_page():
     st.header("Data Visualization")
