@@ -5,64 +5,11 @@ from PIL import Image
 import time
 import random
 
-def custom_navigation():
-    """
-    Creates a custom navigation bar using HTML and CSS with proper page navigation
-    """
-    st.markdown("""
-    <style>
-    /* Custom Navigation Container */
-    .nav-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #f0f2f6;
-        border-radius: 50px;
-        padding: 10px 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    
-    /* Navigation Links */
-    .nav-link {
-        text-decoration: none;
-        color: #333;
-        padding: 10px 20px;
-        margin: 0 10px;
-        border-radius: 25px;
-        transition: all 0.3s ease;
-        font-weight: 500;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    /* Active Navigation Link */
-    .nav-link.active {
-        background-color: #007bff;
-        color: white !important;
-        box-shadow: 0 4px 6px rgba(0,123,255,0.2);
-    }
-    
-    /* Hover Effect */
-    .nav-link:hover {
-        background-color: rgba(0,123,255,0.1);
-        color: #007bff;
-    }
-    
-    /* Hide default Streamlit radio button */
-    .stRadio > div > div > div > label > div {
-        display: none !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
+# ------------------Main Streamlit App------------------
 def main():
     st.set_page_config(page_title="Ontario Energy Forecasting System", layout="wide")
 
-    # Custom navigation
-    custom_navigation()
-
-    # Pages dictionary
+    # Navigation
     pages = {
         "Home": home_page,
         "Visualization": visualization_page,
@@ -70,23 +17,12 @@ def main():
         "Evaluation": evaluation_page
     }
 
-    # Determine current page using query parameters
-    page_param = st.experimental_get_query_params().get("page", ["Home"])[0]
-    current_page = page_param if page_param in pages else "Home"
-
-    # Navigation buttons
-    nav_options = list(pages.keys())
-    selected_page = st.radio("Select Page", nav_options, index=nav_options.index(current_page), horizontal=True, label_visibility="collapsed")
-
-    # Update query parameters when a page is selected
-    if selected_page != current_page:
-        st.experimental_set_query_params(page=selected_page)
-        st.experimental_rerun()
+    # Create menu in the main page instead of sidebar
+    page = st.radio("Navigation", list(pages.keys()), horizontal=True)
 
     # Call the appropriate page function
-    pages[selected_page]()
+    pages[page]()
 
-# Rest of the code remains the same as in the original script (home_page, visualization_page, prediction_page, evaluation_page functions)
 def home_page():
     st.title("Ontario Energy Forecasting System")
     
@@ -101,9 +37,7 @@ def home_page():
     
     # Footer-like information
     st.markdown("---")
-    st.markdown("© Data Science Project_Group02, 2025-3-26")
-
-# (Other functions remain the same as in the original script)
+    st.markdown("© Data Science Project, 2025-3-26-")
 
 def visualization_page():
     st.header("Data Visualization")
