@@ -5,9 +5,89 @@ from PIL import Image
 import time
 import random
 
-# ------------------Main Streamlit App------------------
+def custom_navigation():
+    """
+    Creates a custom navigation bar using HTML and CSS
+    """
+    st.markdown("""
+    <style>
+    /* Custom Navigation Container */
+    .nav-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f2f6;
+        border-radius: 50px;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    /* Navigation Links */
+    .nav-link {
+        text-decoration: none;
+        color: #333;
+        padding: 10px 20px;
+        margin: 0 10px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Active Navigation Link */
+    .nav-link.active {
+        background-color: #007bff;
+        color: white !important;
+        box-shadow: 0 4px 6px rgba(0,123,255,0.2);
+    }
+    
+    /* Hover Effect */
+    .nav-link:hover {
+        background-color: rgba(0,123,255,0.1);
+        color: #007bff;
+    }
+    
+    /* Hide default Streamlit radio button */
+    .stRadio > div > div > label > div > div > div {
+        display: none !important;
+    }
+    </style>
+    
+    <div class="nav-container">
+        <script>
+        // JavaScript to handle active state
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const links = document.querySelectorAll('.nav-link');
+            const currentPath = window.location.pathname;
+            
+            links.forEach(link => {
+                link.addEventListener('click', function() {
+                    links.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+        </script>
+    """, unsafe_allow_html=True)
+
+    # Create custom navigation using HTML
+    nav_html = """
+    <div class="nav-links">
+        <a href="#Home" class="nav-link" onclick="window.location.reload()">Home</a>
+        <a href="#Visualization" class="nav-link" onclick="window.location.reload()">Visualization</a>
+        <a href="#Prediction" class="nav-link" onclick="window.location.reload()">Prediction</a>
+        <a href="#Evaluation" class="nav-link" onclick="window.location.reload()">Evaluation</a>
+    </div>
+    """
+    st.markdown(nav_html, unsafe_allow_html=True)
+
 def main():
     st.set_page_config(page_title="Ontario Energy Forecasting System", layout="wide")
+
+    # Replace the standard radio button with custom navigation
+    custom_navigation()
 
     # Navigation
     pages = {
@@ -17,12 +97,17 @@ def main():
         "Evaluation": evaluation_page
     }
 
-    # Create menu in the main page instead of sidebar
-    page = st.radio("Navigation", list(pages.keys()), horizontal=True)
+    # Determine current page based on hash in URL
+    current_page = "Home"
+    page_hash = st.experimental_get_query_params().get("page", ["Home"])[0]
+    
+    if page_hash in pages:
+        current_page = page_hash
 
     # Call the appropriate page function
-    pages[page]()
+    pages[current_page]()
 
+# Rest of the functions remain the same as in the original script
 def home_page():
     st.title("Ontario Energy Forecasting System")
     
