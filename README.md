@@ -15,9 +15,9 @@
 
 ![Classification metrics radar chart](Evaluation/Classification%20Metrics%20Accuracy%20Precision%20Recall%20Accuracy%20F1-score%20about%20different%20models.png)
 
-<video src="group2-forecasting-ontario-energy-demand-demo.mp4" controls width="640">
-  Your browser does not support the video tag. Download the demo from the repository root.
-</video>
+[![Watch the demo on YouTube](https://img.youtube.com/vi/fHaWhkqskY0/hqdefault.jpg)](https://www.youtube.com/watch?v=fHaWhkqskY0)
+
+Prefer an offline copy? Use `group2-forecasting-ontario-energy-demand-demo.mp4` in the repository root.
 
 ## Repository Guide
 ```
