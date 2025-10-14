@@ -9,17 +9,17 @@
 - Benchmarks statistical and machine learning models (ARIMA, SARIMA, XGBoost, LightGBM, RandomForest) and packages their predictions as ready-to-use visuals.
 
 ## Quick Visual Tour
-![Seasonal energy demand overview](Visulation/Vs01-Averege%20Hourly%20Demand%20by%20Season%20in%20Ontario.png)
-
-![LightGBM demand forecast](predict/prediction-demand-lightgbm.png)
-
-![Classification metrics radar chart](Evaluation/Classification%20Metrics%20Accuracy%20Precision%20Recall%20Accuracy%20F1-score%20about%20different%20models.png)
-
 Click the thumbnail below to open the full demo on YouTube:
 
 [![Watch the demo on YouTube](https://img.youtube.com/vi/fHaWhkqskY0/hqdefault.jpg)](https://www.youtube.com/watch?v=fHaWhkqskY0)
 
 Prefer an offline copy? Use `group2-forecasting-ontario-energy-demand-demo.mp4` in the repository root.
+
+![Seasonal energy demand overview](Visulation/Vs01-Averege%20Hourly%20Demand%20by%20Season%20in%20Ontario.png)
+
+![LightGBM demand forecast](predict/prediction-demand-lightgbm.png)
+
+![Classification metrics radar chart](Evaluation/Classification%20Metrics%20Accuracy%20Precision%20Recall%20Accuracy%20F1-score%20about%20different%20models.png)
 
 ## Repository Guide
 ```
