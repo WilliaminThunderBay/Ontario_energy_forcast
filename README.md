@@ -7,9 +7,7 @@
 - Delivers a reproducible workflow that spans data collection, cleansing, feature engineering, forecasting, and evaluation.
 - Offers two interactive front ends (Streamlit web app and Tkinter desktop prototype) plus a slide deck, PDF report, and demo video.
 - Benchmarks statistical and machine learning models (ARIMA, SARIMA, XGBoost, LightGBM, RandomForest) and packages their predictions as ready-to-use visuals.
-<video src="https://github.com/WilliaminThunderBay/Ontario_energy_forcast/raw/main/videoplayback.mp4" controls width="100%">
-  Your browser does not support the video tag.
-</video>
+
 ## Quick Visual Tour
 Click the thumbnail below to open the full demo on YouTube:
 
